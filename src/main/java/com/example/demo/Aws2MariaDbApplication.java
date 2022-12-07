@@ -22,7 +22,7 @@ import com.example.demo.dto.DynaKeyDto;
 
 
 @SpringBootApplication
-public class AwsData2DbApplication {
+public class Aws2MariaDbApplication {
     public static void main(String[] args) {
         // SchedulerFactory Create
         SchedulerFactory schedulerFactory = new StdSchedulerFactory();
