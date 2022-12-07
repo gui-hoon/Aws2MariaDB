@@ -46,7 +46,7 @@ public class DbScheduler implements Job{
 		ConnectDB td = new ConnectDB();
 		try {
 			td.openCon();
-			td.insertInstanceDetail();
+//			td.insertInstanceDetail();
 			
 			// Dynatrace API
 			keyList = td.selectDynatraceConfig();
@@ -69,7 +69,7 @@ public class DbScheduler implements Job{
 				td.callUpdateAwsconfigIdP();
 			}
 			
-			td.insertAwsResource(Instant.parse(startTime), Instant.parse(endTime));
+//			td.insertAwsResource(Instant.parse(startTime), Instant.parse(endTime));
 			td.closeCon();
 		} catch (Exception e) {
 			e.printStackTrace();
