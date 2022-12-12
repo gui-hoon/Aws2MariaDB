@@ -25,6 +25,7 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
+import com.amazonaws.services.ec2.model.AmazonEC2Exception;
 import com.amazonaws.services.ec2.model.DescribeAvailabilityZonesResult;
 import com.amazonaws.services.ec2.model.DescribeInstancesRequest;
 import com.amazonaws.services.ec2.model.DescribeInstancesResult;
@@ -275,22 +276,27 @@ public class ConnectDB {
 			
 			DescribeInstancesRequest request = new DescribeInstancesRequest();
 			
-			while(!done) {
-			    DescribeInstancesResult response = ec2.describeInstances(request);
+			try {
+				while(!done) {
+				    DescribeInstancesResult response = ec2.describeInstances(request);
 
-			    for(Reservation reservation : response.getReservations()) {
-			        for(Instance instance : reservation.getInstances()) {
-			            insertInstanceData(accessKey, instance.getInstanceId(), instance.getImageId(), 
-			            		instance.getPublicDnsName(), instance.getPrivateDnsName(), instance.getInstanceType(), instance.getArchitecture(), instance.getPlatformDetails(), region);
-			        }
-			    }
+				    for(Reservation reservation : response.getReservations()) {
+				        for(Instance instance : reservation.getInstances()) {
+				            insertInstanceData(accessKey, instance.getInstanceId(), instance.getImageId(), 
+				            		instance.getPublicDnsName(), instance.getPrivateDnsName(), instance.getInstanceType(), instance.getArchitecture(), instance.getPlatformDetails(), region);
+				        }
+				    }
 
-			    request.setNextToken(response.getNextToken());
+				    request.setNextToken(response.getNextToken());
 
-			    if(response.getNextToken() == null) {
-			        done = true;
-			    }
-			}
+				    if(response.getNextToken() == null) {
+				        done = true;
+				    }
+				}
+			} catch (AmazonEC2Exception e) {
+	    		System.err.println(e.getErrorMessage());
+	    		continue;
+	    	}
 		}
 	}
 
@@ -307,6 +313,7 @@ public class ConnectDB {
         
 		for (int k = 0; k < keyList.size(); k++) {
 			// Need to modify from 0 to k
+			
 			accessKey = keyList.get(k).getAccessKey();
 			secretKey = keyList.get(k).getSecretKey();
 			Region region = Region.of(keyList.get(k).getRegion());
@@ -315,15 +322,15 @@ public class ConnectDB {
 			ArrayList<String> resourceList =  new ArrayList<>(Arrays.asList("CPUUtilization", "DiskReadBytes", "DiskWriteBytes", "NetworkIn", "NetworkOut"));
 			ArrayList<String> statList = new ArrayList<>(Arrays.asList("Average", "Minimum", "Maximum"));
 			
+			
 			AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(accessKey, secretKey);
-		    AwsCredentialsProvider credentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
-		    CloudWatchClient cloudWatchClient  = CloudWatchClient.builder()
+			AwsCredentialsProvider credentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
+			CloudWatchClient cloudWatchClient  = CloudWatchClient.builder()
 		    		.credentialsProvider(credentialsProvider)
 		    		.region(region)
 		    		.build();
 			
 		    int period = 3600;
-	        
 	        boolean done = false;
 	        String nToken = null;
 	        
@@ -415,7 +422,7 @@ public class ConnectDB {
 			    	
 		    	} catch (CloudWatchException e) {
 		    		System.err.println(e.awsErrorDetails().errorMessage());
-		    		System.exit(1);
+		    		continue;
 		    	}
 	        }
 	    }
@@ -467,6 +474,7 @@ public class ConnectDB {
 				
 			} catch (Exception e) {
 				e.printStackTrace();
+				continue;
 			}
 			
 			String contents =null;

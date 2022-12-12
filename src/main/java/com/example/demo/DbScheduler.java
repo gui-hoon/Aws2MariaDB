@@ -46,7 +46,7 @@ public class DbScheduler implements Job{
 		ConnectDB td = new ConnectDB();
 		try {
 			td.openCon();
-//			td.insertInstanceDetail();
+			td.insertInstanceDetail();
 			
 			// Dynatrace API
 			keyList = td.selectDynatraceConfig();
