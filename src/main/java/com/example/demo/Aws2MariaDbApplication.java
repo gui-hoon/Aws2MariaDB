@@ -30,28 +30,28 @@ public class Aws2MariaDbApplication {
         // 첫 실행 시 data init
         // Dynatrace variable
         
-        GetEntities getentities = new GetEntities();
-		ArrayList<DynaKeyDto> keyList = new ArrayList<>();
-		List<String> entityList = new ArrayList<>();
-		HashMap<String, String> ec2EntityIdMap = new HashMap<String, String>();
-		List<String> metricKeyList = new ArrayList<>();		
-		String environment = null;
-		String token = null;
-		
-		String endTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'"));
-		String startTime = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'"));
-		String resolution = "1h";
-		String entityType = "type(\"HOST\")";
-		metricKeyList.add("builtin:host.(cpu.usage,disk.bytesRead,disk.bytesWritten,net.nic.bytesRx,net.nic.bytesTx,mem.usage):(min,max,avg)");
-		metricKeyList.add("builtin:host.disk.free");
-		ConnectDB td = new ConnectDB();
-		
-		try {
-			td.openCon();
+//        GetEntities getentities = new GetEntities();
+//		ArrayList<DynaKeyDto> keyList = new ArrayList<>();
+//		List<String> entityList = new ArrayList<>();
+//		HashMap<String, String> ec2EntityIdMap = new HashMap<String, String>();
+//		List<String> metricKeyList = new ArrayList<>();		
+//		String environment = null;
+//		String token = null;
+//		
+//		String endTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'"));
+//		String startTime = LocalDateTime.now().minusDays(30).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'"));
+//		String resolution = "1h";
+//		String entityType = "type(\"HOST\")";
+//		metricKeyList.add("builtin:host.(cpu.usage,disk.bytesRead,disk.bytesWritten,net.nic.bytesRx,net.nic.bytesTx,mem.usage):(min,max,avg)");
+//		metricKeyList.add("builtin:host.disk.free");
+//		ConnectDB td = new ConnectDB();
+//		
+//		try {
+//			td.openCon();
 //			td.insertEc2Price();
-			td.insertInstanceDetail();
-			
-			// Dynatrace API
+//			td.insertInstanceDetail();
+//			
+//			// Dynatrace API
 //			keyList = td.selectDynatraceConfig();
 //			for(DynaKeyDto key : keyList) {
 //				environment = key.getEnvironment();
@@ -71,27 +71,27 @@ public class Aws2MariaDbApplication {
 //				}
 //				td.callUpdateAwsconfigIdP();
 //			}
-			
-			td.insertAwsResource(Instant.parse(startTime), Instant.parse(endTime));
-			td.closeCon();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//			
+//			td.insertAwsResource(Instant.parse(startTime), Instant.parse(endTime));
+//			td.closeCon();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		
 		// 매일 자정 scheduler 동작
-//        try {
-//            Scheduler scheduler = schedulerFactory.getScheduler();
-//
-//            JobDetail job = newJob(DbScheduler.class).withIdentity("DBInsertJob", Scheduler.DEFAULT_GROUP).build();
-//
-//            Trigger trigger = newTrigger().withIdentity("DBInsertTrigger", Scheduler.DEFAULT_GROUP)
-//                    .withSchedule(cronSchedule("0 0 0 * * ?")).build(); // every day 00:00:00 -> (0 0 0* * ?)
-//
-//            scheduler.scheduleJob(job, trigger);
-//            scheduler.start();
-//        } catch (Exception e) {
-//        	e.printStackTrace();      
-//    	}
+        try {
+            Scheduler scheduler = schedulerFactory.getScheduler();
+
+            JobDetail job = newJob(DbScheduler.class).withIdentity("DBInsertJob", Scheduler.DEFAULT_GROUP).build();
+
+            Trigger trigger = newTrigger().withIdentity("DBInsertTrigger", Scheduler.DEFAULT_GROUP)
+                    .withSchedule(cronSchedule("0 0 0 * * ?")).build(); // every day 00:00:00 -> (0 0 0* * ?)
+
+            scheduler.scheduleJob(job, trigger);
+            scheduler.start();
+        } catch (Exception e) {
+        	e.printStackTrace();      
+    	}
     }
 
 }
