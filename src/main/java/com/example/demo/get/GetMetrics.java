@@ -90,6 +90,6 @@ public class GetMetrics {
 	 		System.err.println(e.awsErrorDetails().errorMessage());
 	 		System.exit(1);
 	 	}
-		    cloudWatchClient .close();
+		    cloudWatchClient.close();
 		}
 }

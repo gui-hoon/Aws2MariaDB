@@ -425,6 +425,7 @@ public class ConnectDB {
 		    		continue;
 		    	}
 	        }
+	        cloudWatchClient.close();
 	    }
 	}
 
