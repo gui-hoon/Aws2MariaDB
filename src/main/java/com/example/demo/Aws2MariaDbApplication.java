@@ -85,7 +85,7 @@ public class Aws2MariaDbApplication {
             JobDetail job = newJob(DbScheduler.class).withIdentity("DBInsertJob", Scheduler.DEFAULT_GROUP).build();
 
             Trigger trigger = newTrigger().withIdentity("DBInsertTrigger", Scheduler.DEFAULT_GROUP)
-                    .withSchedule(cronSchedule("0 0 19 * * ?")).build(); // every day 00:00:00 -> (0 0 0* * ?)
+                    .withSchedule(cronSchedule("0 0 10 * * ?")).build(); // every day 00:00:00 -> (0 0 0* * ?)
 
             scheduler.scheduleJob(job, trigger);
             scheduler.start();

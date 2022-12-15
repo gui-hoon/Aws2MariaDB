@@ -35,7 +35,7 @@ public class DbScheduler implements Job{
 		String token = null;
 		
 		String endTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'"));
-		String startTime = LocalDateTime.now().minusDays(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'"));
+		String startTime = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:00:00'Z'"));
 		String resolution = "1h";
 		String entityType = "type(\"HOST\")";
 		metricKeyList.add("builtin:host.(cpu.usage,disk.bytesRead,disk.bytesWritten,net.nic.bytesRx,net.nic.bytesTx,mem.usage):(min,max,avg)");
